@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { EASE } from "@/lib/motion";
@@ -14,8 +14,11 @@ const HEADLINE = "Angola: Onde a Natureza encontra a Alma";
 
 export default function HeroSection() {
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState("");
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
   const hasHeroVideo = HERO_VIDEO_SRC.trim().length > 0;
 
   const words = HEADLINE.split(" ");
@@ -28,20 +31,47 @@ export default function HeroSection() {
     router.push(`/pesquisa${params.size > 0 ? `?${params}` : ""}`);
   };
 
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video || !hasHeroVideo) {
+      return;
+    }
+
+    video.muted = isMuted;
+
+    if (isPlaying) {
+      void video.play().catch(() => {
+        setIsPlaying(false);
+      });
+      return;
+    }
+
+    video.pause();
+  }, [hasHeroVideo, isPlaying, isMuted]);
+
+  const togglePlayback = () => {
+    setIsPlaying((current) => !current);
+  };
+
+  const toggleMuted = () => {
+    setIsMuted((current) => !current);
+  };
+
   return (
     <section className="relative h-[921px] w-full overflow-hidden">
       {/* Background — subtle ken burns on load */}
       {hasHeroVideo ? (
         <video
+          ref={videoRef}
           className="absolute inset-0 h-full w-full object-cover"
           autoPlay
-          controls
           loop
-          muted
+          muted={isMuted}
           playsInline
           preload="auto"
           poster={HERO_IMAGE}
-          aria-label="Vídeo de apresentação de Angola com som"
+          aria-label="Vídeo de apresentação de Angola"
         >
           <source src={HERO_VIDEO_SRC} />
         </video>
@@ -59,11 +89,39 @@ export default function HeroSection() {
 
       {/* Dark overlay */}
       <motion.div
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-black/26"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
       />
+
+      {hasHeroVideo ? (
+        <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2 rounded-full bg-black/32 px-2.5 py-2 backdrop-blur-md shadow-md border border-white/10">
+          <button
+            type="button"
+            onClick={toggleMuted}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/45 text-white transition-colors hover:bg-black/65"
+            aria-label={isMuted ? "Ativar volume" : "Desativar volume"}
+            title={isMuted ? "Ativar volume" : "Desativar volume"}
+          >
+            <span className="material-symbols-outlined text-[22px]">
+              {isMuted ? "volume_off" : "volume_up"}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={togglePlayback}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/45 text-white transition-colors hover:bg-black/65"
+            aria-label={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
+            title={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
+          >
+            <span className="material-symbols-outlined text-[22px]">
+              {isPlaying ? "pause" : "play_arrow"}
+            </span>
+          </button>
+        </div>
+      ) : null}
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-margin-mobile">
