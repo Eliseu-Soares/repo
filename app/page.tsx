@@ -9,6 +9,7 @@ import ExperienceCarousel from "@/components/home/ExperienceCarousel";
 import CulturalSection from "@/components/home/CulturalSection";
 import EventsSection from "@/components/home/EventsSection";
 import GallerySection from "@/components/home/GallerySection";
+import MetaTurismoSection from "@/components/metaturismo/MetaTurismoSection";
 import PlanningSection from "@/components/home/PlanningSection";
 import NewsSection from "@/components/home/NewsSection";
 import NewsletterSection from "@/components/home/NewsletterSection";
@@ -49,16 +50,19 @@ export default function HomePage() {
       {/* 10 — Galeria Inspiracional */}
       <GallerySection />
 
-      {/* 11 — Planeie a sua Viagem */}
+      {/* 11 — MetaTurismo / VR360 */}
+      <MetaTurismoSection />
+
+      {/* 12 — Planeie a sua Viagem */}
       <PlanningSection />
 
-      {/* 12 — Notícias e Atualidades */}
+      {/* 13 — Notícias e Atualidades */}
       <NewsSection />
 
-      {/* 13 — Newsletter */}
+      {/* 14 — Newsletter */}
       <NewsletterSection />
 
-      {/* 14 — CTA Final */}
+      {/* 15 — CTA Final */}
       <CTASection />
     </main>
   );

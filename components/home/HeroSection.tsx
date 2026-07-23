@@ -31,31 +31,33 @@ export default function HeroSection() {
     router.push(`/pesquisa${params.size > 0 ? `?${params}` : ""}`);
   };
 
-  useEffect(() => {
+  const togglePlayback = () => {
     const video = videoRef.current;
 
-    if (!video || !hasHeroVideo) {
+    if (!video) {
+      setIsPlaying((current) => !current);
       return;
     }
 
-    video.muted = isMuted;
-
-    if (isPlaying) {
-      void video.play().catch(() => {
-        setIsPlaying(false);
-      });
+    if (video.paused) {
+      video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
       return;
     }
 
     video.pause();
-  }, [hasHeroVideo, isPlaying, isMuted]);
-
-  const togglePlayback = () => {
-    setIsPlaying((current) => !current);
+    setIsPlaying(false);
   };
 
   const toggleMuted = () => {
-    setIsMuted((current) => !current);
+    const video = videoRef.current;
+    const nextMuted = !isMuted;
+
+    if (video) {
+      video.muted = nextMuted;
+      video.volume = nextMuted ? 0 : 1;
+    }
+
+    setIsMuted(nextMuted);
   };
 
   return (
@@ -171,18 +173,7 @@ export default function HeroSection() {
               type="text"
             />
           </div>
-          <div className="flex-1 flex items-center px-4">
-            <span className="material-symbols-outlined text-primary mr-3 shrink-0">
-              calendar_today
-            </span>
-            <input
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full border-none focus:ring-0 bg-transparent py-4 font-body-md outline-none"
-              placeholder="Quando? (ex: Março 2025)"
-              type="text"
-            />
-          </div>
+   
           <button
             type="submit"
             className="bg-primary text-white px-10 py-4 font-label-caps text-label-caps hover:bg-primary-container transition-colors active:scale-95 duration-200 rounded-md shrink-0"
