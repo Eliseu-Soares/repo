@@ -39,6 +39,18 @@ export const DEMO_PANORAMAS: Panorama360[] = [
       { pitch: -10, yaw: 150, text: "Esta vegetação ribeirinha é típica de zonas húmidas de altitude." },
     ],
   },
+    {
+    id: "moonlit_golf",
+    title: "Moonlit Golf (Demo)",
+    description: "Paisagem de exemplo — Poly Haven",
+    thumbnail: "/panoramas/moonlit_golf.jpg",
+    panorama: "/panoramas/moonlit_golf.jpg",
+    audioSrc: undefined, // ex: "/audio/lakeside_sunrise.mp3"
+    hotspots: [
+      { pitch: 5, yaw: 30, text: "Ali ao fundo vês a linha de montanhas que emolduram o vale." },
+      { pitch: -10, yaw: 150, text: "Esta vegetação ribeirinha é típica de zonas húmidas de altitude." },
+    ],
+  },
 ];
 
 // -----------------------------------------------------------------------
@@ -126,15 +138,27 @@ const IconFullscreen = () => (
     <path d="M8 4H4v4M16 4h4v4M8 20H4v-4M16 20h4v-4" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+const IconChevronLeft = () => (
+  <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+const IconChevronRight = () => (
+  <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
 // -----------------------------------------------------------------------
 // Card individual
 // -----------------------------------------------------------------------
 function PanoramaCard({
   panorama,
+  sceneCount,
   onSelect,
 }: {
   panorama: Panorama360;
+  sceneCount?: number;
   onSelect: (p: Panorama360) => void;
 }) {
   return (
@@ -151,7 +175,7 @@ function PanoramaCard({
           loading="lazy"
         />
         <span className="absolute top-2 left-2 text-[10px] font-semibold tracking-wide bg-black/60 backdrop-blur text-white px-2 py-1 rounded-full">
-          360°
+          360°{sceneCount && sceneCount > 1 ? ` · ${sceneCount} locais` : ""}
         </span>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
         <div className="absolute inset-0 flex items-center justify-center">
@@ -178,9 +202,13 @@ function PanoramaCard({
 function PanoramaModal({
   panorama,
   onClose,
+  onNext,
+  onPrev,
 }: {
   panorama: Panorama360;
   onClose: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -190,7 +218,7 @@ function PanoramaModal({
   const [autoRotate, setAutoRotate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [fov, setFov] = useState(100);
-  const [rotationSpeed] = useState(2);
+  const [rotationSpeed, setRotationSpeed] = useState(2);
   const [tooltip, setTooltip] = useState<string | null>(null);
   const tooltipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -229,8 +257,8 @@ function PanoramaModal({
           type: "equirectangular",
           panorama: panorama.panorama,
           autoLoad: true,
-          title: panorama.title,
-          caption: panorama.description || "",
+          // title/caption omitidos de propósito: o nome e a descrição já
+          // aparecem no cabeçalho flutuante superior, evitar duplicar.
           compass: true,
           showZoomCtrl: false,
           showFullscreenCtrl: false,
@@ -263,6 +291,25 @@ function PanoramaModal({
     viewerRef.current?.setFov?.(newFov);
   }, []);
 
+  const showTooltip = useCallback((message: string) => {
+    setTooltip(message);
+    if (tooltipTimeoutRef.current) clearTimeout(tooltipTimeoutRef.current);
+    tooltipTimeoutRef.current = setTimeout(() => setTooltip(null), 1500);
+  }, []);
+
+  const handleSpeedChange = useCallback(
+    (newSpeed: number) => {
+      setRotationSpeed(newSpeed);
+      showTooltip(`Velocidade: ${newSpeed.toFixed(1)}x`);
+      // Se a rotação automática já estiver ativa, aplica a nova velocidade
+      // em tempo real, sem precisar desligar e ligar novamente.
+      if (autoRotate && viewerRef.current) {
+        viewerRef.current.startAutoRotate(-newSpeed);
+      }
+    },
+    [autoRotate, showTooltip]
+  );
+
   const toggleAutoRotate = useCallback(() => {
     if (!viewerRef.current) return;
     setAutoRotate((prev) => {
@@ -275,12 +322,6 @@ function PanoramaModal({
   const resetView = useCallback(() => {
     viewerRef.current?.lookAt?.(0, 0, 100, false);
     setFov(100);
-  }, []);
-
-  const showTooltip = useCallback((message: string) => {
-    setTooltip(message);
-    if (tooltipTimeoutRef.current) clearTimeout(tooltipTimeoutRef.current);
-    tooltipTimeoutRef.current = setTimeout(() => setTooltip(null), 1500);
   }, []);
 
   // ---- Teclado ----
@@ -307,6 +348,18 @@ function PanoramaModal({
           handleFovChange(Math.min(120, fov + 5));
           showTooltip(`Zoom: ${Math.round(Math.min(120, fov + 5) * 0.6)}%`);
           break;
+        case "ArrowRight":
+          if (onNext) {
+            e.preventDefault();
+            onNext();
+          }
+          break;
+        case "ArrowLeft":
+          if (onPrev) {
+            e.preventDefault();
+            onPrev();
+          }
+          break;
       }
     };
     window.addEventListener("keydown", handleKeydown);
@@ -314,7 +367,7 @@ function PanoramaModal({
       window.removeEventListener("keydown", handleKeydown);
       if (tooltipTimeoutRef.current) clearTimeout(tooltipTimeoutRef.current);
     };
-  }, [fov, onClose, resetView, handleFovChange, showTooltip]);
+  }, [fov, onClose, resetView, handleFovChange, showTooltip, onNext, onPrev]);
 
   // ---- Controlos de áudio ----
   const toggleAudio = useCallback(() => {
@@ -342,6 +395,10 @@ function PanoramaModal({
       aria-modal="true"
       aria-label="Visualizador 360"
     >
+      {/* Esconde a caixa de título nativa do Pannellum: o nome e a
+          descrição do panorama já são apresentados no cabeçalho superior. */}
+      <style>{`.pnlm-title-box { display: none !important; }`}</style>
+
       {/* Viewer ocupa todo o ecrã */}
       <div ref={containerRef} className="absolute inset-0" aria-busy={loading} />
 
@@ -369,6 +426,28 @@ function PanoramaModal({
         </div>
       )}
 
+      {/* Navegação lateral entre panoramas (cada um com o seu próprio áudio) */}
+      {onPrev && (
+        <button
+          onClick={onPrev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors backdrop-blur"
+          aria-label="Panorama anterior"
+          title="Anterior (←)"
+        >
+          <IconChevronLeft />
+        </button>
+      )}
+      {onNext && (
+        <button
+          onClick={onNext}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors backdrop-blur"
+          aria-label="Próximo panorama"
+          title="Próximo (→)"
+        >
+          <IconChevronRight />
+        </button>
+      )}
+
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-30">
           <div className="flex flex-col items-center gap-3">
@@ -381,7 +460,7 @@ function PanoramaModal({
       {/* Barra inferior flutuante */}
       <div className="absolute bottom-0 inset-x-0 z-20 bg-gradient-to-t from-black/85 to-transparent p-4 md:p-6 space-y-3">
         {panorama.audioSrc && (
-          <div className="flex items-center gap-3 max-w-xl bg-white/10 rounded-full px-3 py-2 backdrop-blur">
+          <div className="flex items-center gap-3 max-w-xl w-full mx-auto bg-white/10 rounded-full px-3 py-2 backdrop-blur">
             <button onClick={toggleAudio} className="text-white flex-shrink-0" aria-label={isPlaying ? "Pausar" : "Reproduzir"}>
               {isPlaying ? <IconPause /> : <IconPlay />}
             </button>
@@ -412,15 +491,17 @@ function PanoramaModal({
 
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-2 backdrop-blur">
-            <span className="text-white text-xs font-mono w-9">{Math.round(fov)}°</span>
+            <span className="text-white text-xs font-mono w-9">{rotationSpeed.toFixed(1)}x</span>
             <input
               type="range"
-              min="30"
-              max="120"
-              value={fov}
-              onChange={(e) => handleFovChange(Number(e.target.value))}
+              min="0.5"
+              max="8"
+              step="0.5"
+              value={rotationSpeed}
+              onChange={(e) => handleSpeedChange(Number(e.target.value))}
               className="w-28 md:w-40 h-1 bg-white/20 rounded-full appearance-none cursor-pointer accent-white"
-              aria-label="Zoom"
+              aria-label="Velocidade de rotação"
+              title="Velocidade de rotação automática"
             />
           </div>
 
@@ -430,7 +511,7 @@ function PanoramaModal({
               autoRotate ? "bg-white/30" : "bg-white/10 hover:bg-white/20"
             }`}
             aria-label="Rotação automática"
-            title="Rotação automática (Espaço)"
+            title="Rotação automática"
           >
             <IconRotate />
           </button>
@@ -463,7 +544,16 @@ function PanoramaModal({
 // Seção principal
 // -----------------------------------------------------------------------
 export default function MetaTurismoSection({ panoramas = DEMO_PANORAMAS }: MetaTurismoSectionProps) {
-  const [selected, setSelected] = useState<Panorama360 | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const selected = selectedIndex !== null ? panoramas[selectedIndex] : null;
+
+  const goNext = useCallback(() => {
+    setSelectedIndex((i) => (i === null ? null : (i + 1) % panoramas.length));
+  }, [panoramas.length]);
+
+  const goPrev = useCallback(() => {
+    setSelectedIndex((i) => (i === null ? null : (i - 1 + panoramas.length) % panoramas.length));
+  }, [panoramas.length]);
 
   return (
     <section className="w-full bg-black py-12 px-4 sm:px-6">
@@ -480,15 +570,31 @@ export default function MetaTurismoSection({ panoramas = DEMO_PANORAMAS }: MetaT
             <p className="text-neutral-400">Nenhum panorama disponível.</p>
           </div>
         ) : (
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-thin">
-            {panoramas.map((p) => (
-              <PanoramaCard key={p.id} panorama={p} onSelect={setSelected} />
-            ))}
+          // Mostra apenas um cartão de entrada (o primeiro panorama).
+          // Os restantes só aparecem dentro do modal, ao navegar com as
+          // setas laterais — não ficam listados lado a lado aqui.
+          <div className="flex">
+            <PanoramaCard
+              panorama={panoramas[0]}
+              sceneCount={panoramas.length}
+              onSelect={() => setSelectedIndex(0)}
+            />
           </div>
         )}
       </div>
 
-      {selected && <PanoramaModal panorama={selected} onClose={() => setSelected(null)} />}
+      {selected && (
+        // A "key" força o modal a remontar a cada troca de panorama, o que
+        // reinicia por completo o leitor de áudio (play/pause, timer,
+        // volume) para que reflita sempre a faixa do panorama atual.
+        <PanoramaModal
+          key={selected.id}
+          panorama={selected}
+          onClose={() => setSelectedIndex(null)}
+          onNext={panoramas.length > 1 ? goNext : undefined}
+          onPrev={panoramas.length > 1 ? goPrev : undefined}
+        />
+      )}
     </section>
   );
 }
