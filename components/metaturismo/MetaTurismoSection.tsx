@@ -556,11 +556,11 @@ export default function MetaTurismoSection({ panoramas = DEMO_PANORAMAS }: MetaT
   }, [panoramas.length]);
 
   return (
-    <section className="w-full bg-black py-12 px-4 sm:px-6">
+    <section className="w-full bg-black py-5 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h2 className="text-white text-3xl md:text-4xl font-bold mb-2">🌍 Meta Turismo</h2>
-          <p className="text-neutral-400 max-w-2xl">
+          <h2 className="font-label-caps text-label-caps text-secondary tracking-widest block mb-4 uppercase">Meta Turismo</h2>
+          <p className="font-headline-md text-headline-md">
             Explora Angola em realidade virtual 360°.
           </p>
         </div>
