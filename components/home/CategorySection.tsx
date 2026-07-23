@@ -9,7 +9,7 @@ const CATEGORIES = [
     label: "Praias",
     description: "Litoral virgem de 1.650 km",
     href: "/destinos?categoria=praias",
-    color: "bg-blue-50 text-blue-600",
+    color: "bg-blue-50 text-blue-600 ring-blue-100",
     hoverBg: "group-hover:bg-blue-600",
   },
   {
@@ -17,7 +17,7 @@ const CATEGORIES = [
     label: "Parques Naturais",
     description: "Fauna e flora únicas de África",
     href: "/destinos?categoria=parques",
-    color: "bg-green-50 text-green-700",
+    color: "bg-green-50 text-green-700 ring-green-100",
     hoverBg: "group-hover:bg-green-700",
   },
   {
@@ -25,7 +25,7 @@ const CATEGORIES = [
     label: "Monumentos",
     description: "Testemunhos de séculos de história",
     href: "/destinos?categoria=monumentos",
-    color: "bg-amber-50 text-amber-700",
+    color: "bg-amber-50 text-amber-700 ring-amber-100",
     hoverBg: "group-hover:bg-amber-700",
   },
   {
@@ -33,7 +33,7 @@ const CATEGORIES = [
     label: "Gastronomia",
     description: "Sabores da terra e do mar",
     href: "/gastronomia",
-    color: "bg-orange-50 text-orange-600",
+    color: "bg-orange-50 text-orange-600 ring-orange-100",
     hoverBg: "group-hover:bg-orange-600",
   },
   {
@@ -41,7 +41,7 @@ const CATEGORIES = [
     label: "Cultura",
     description: "Arte, música e tradições vivas",
     href: "/cultura",
-    color: "bg-purple-50 text-purple-700",
+    color: "bg-purple-50 text-purple-700 ring-purple-100",
     hoverBg: "group-hover:bg-purple-700",
   },
   {
@@ -49,7 +49,7 @@ const CATEGORIES = [
     label: "Aventura",
     description: "Trilhos, safari e adrenalina",
     href: "/experiencias?tipo=aventura",
-    color: "bg-teal-50 text-teal-700",
+    color: "bg-teal-50 text-teal-700 ring-teal-100",
     hoverBg: "group-hover:bg-teal-700",
   },
 ];
@@ -90,15 +90,14 @@ export default function CategorySection() {
             href={cat.href}
             className="group flex flex-col items-center text-center p-6 border border-savanna-sand hover:border-transparent hover:shadow-xl transition-all duration-300 rounded-sm cursor-pointer"
             variants={fadeUp}
-            whileHover={{ y: -8, transition: { duration: 0.25 } }}
           >
             {/* Icon container */}
             <motion.div
-              className={`w-16 h-16 rounded-full flex items-center justify-center mb-5 ${cat.color} ${cat.hoverBg} transition-colors duration-300`}
-              whileHover={{ scale: 1.1, rotate: 5 }}
+              className={`w-20 h-20 rounded-full flex items-center justify-center mb-5 ring-1 ${cat.color} ${cat.hoverBg} transition-colors duration-300`}
+              whileHover={{ scale: 1.08 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
             >
-              <span className={`material-symbols-outlined text-[28px] group-hover:text-white transition-colors duration-300`}>
+              <span className="material-symbols-outlined text-[32px] group-hover:text-white transition-colors duration-300">
                 {cat.icon}
               </span>
             </motion.div>

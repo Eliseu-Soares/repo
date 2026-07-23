@@ -19,15 +19,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       // Immutable cache for static assets
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
+
       // Long-lived cache for images/fonts
       {
-        source: "/:path*\\.(ico|png|jpg|jpeg|gif|webp|avif|svg|woff|woff2)",
+        source: "/:path*.:ext(ico|png|jpg|jpeg|gif|webp|avif|svg|woff|woff2)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
         ],

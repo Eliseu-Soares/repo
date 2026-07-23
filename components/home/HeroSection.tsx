@@ -13,7 +13,6 @@ const HEADLINE = "Angola: Onde a Natureza encontra a Alma";
 export default function HeroSection() {
   const router = useRouter();
   const [destination, setDestination] = useState("");
-  const [date, setDate] = useState("");
 
   const words = HEADLINE.split(" ");
 
@@ -21,7 +20,6 @@ export default function HeroSection() {
     e.preventDefault();
     const params = new URLSearchParams();
     if (destination.trim()) params.set("q", destination.trim());
-    if (date.trim()) params.set("data", date.trim());
     router.push(`/pesquisa${params.size > 0 ? `?${params}` : ""}`);
   };
 
@@ -47,7 +45,7 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-margin-mobile">
+      <div className="relative z-10 h-full mb-16 flex flex-col justify-center items-center text-center px-margin-mobile">
         {/* Word-by-word headline */}
         <h1 className="text-white font-display-lg text-display-lg-mobile md:text-display-lg max-w-4xl leading-tight">
           {words.map((word, i) => (
@@ -74,64 +72,56 @@ export default function HeroSection() {
           experiências inesquecíveis no coração de África.
         </motion.p>
 
-        {/* Search form */}
+        {/* Search bar — single field, pill shape, no borders */}
         <motion.form
           onSubmit={handleSearch}
-          className="w-full max-w-3xl bg-white/95 backdrop-blur-md p-2 rounded-lg shadow-2xl flex flex-col md:flex-row gap-2 border border-savanna-sand"
+          className="w-full max-w-xl bg-white/95 backdrop-blur-md p-1.5 shadow-lg flex items-center gap-1 transition-shadow focus-within:shadow-xl"
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.15, ease: EASE }}
         >
-          <div className="flex-1 flex items-center px-4 md:border-r border-savanna-sand/50">
-            <span className="material-symbols-outlined text-primary mr-3 shrink-0">
+          <div className="flex-1 flex items-center pl-5">
+            <span className="material-symbols-outlined text-primary mr-3 shrink-0 text-[20px]">
               location_on
             </span>
             <input
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="w-full border-none focus:ring-0 bg-transparent py-4 font-body-md outline-none"
+              className="w-full border-none bg-transparent py-3.5 font-body-md outline-none"
               placeholder="Para onde quer ir?"
               type="text"
             />
           </div>
-          <div className="flex-1 flex items-center px-4">
-            <span className="material-symbols-outlined text-primary mr-3 shrink-0">
-              calendar_today
-            </span>
-            <input
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full border-none focus:ring-0 bg-transparent py-4 font-body-md outline-none"
-              placeholder="Quando? (ex: Março 2025)"
-              type="text"
-            />
-          </div>
+
           <button
             type="submit"
-            className="bg-primary text-white px-10 py-4 font-label-caps text-label-caps hover:bg-primary-container transition-colors active:scale-95 duration-200 rounded-md shrink-0"
+            className="bg-primary text-white px-8 py-3.5 font-label-caps text-label-caps hover:bg-primary-container transition-colors active:scale-95 duration-200 shrink-0"
           >
-            PESQUISAR
+            Pesquisar
           </button>
         </motion.form>
 
-        {/* CTAs */}
+        {/* Secondary actions — both solid, no borders */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-4 mt-6"
+          className="flex items-center gap-4 mt-10"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.4, ease: EASE }}
         >
           <a
             href="/destinos"
-            className="bg-primary text-white px-10 py-4 font-label-caps text-label-caps tracking-widest hover:bg-primary-container transition-colors active:scale-95 duration-200 text-center"
+            className="group inline-flex items-center gap-2 bg-primary/90 text-white px-8 py-3 font-label-caps text-label-caps tracking-widest hover:bg-primary-container transition-colors active:scale-95 duration-200"
           >
-            EXPLORAR DESTINOS
+            Explorar destinos
+            <span className="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:translate-x-1">
+              arrow_forward
+            </span>
           </a>
           <a
             href="#intro"
-            className="border border-white/80 text-white px-10 py-4 font-label-caps text-label-caps tracking-widest hover:bg-white/15 hover:border-white transition-all text-center"
+            className="bg-white/15 text-white px-16 py-4.5 font-label-caps text-label-caps tracking-widest hover:bg-white/25 transition-colors active:scale-95 duration-200"
           >
-            SABER MAIS
+            Saber mais
           </a>
         </motion.div>
       </div>
