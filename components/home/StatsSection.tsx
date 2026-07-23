@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { fadeUp, stagger, staggerSlow, viewportOnce } from "@/lib/motion";
 
 const PLANNING_CARDS = [
@@ -32,61 +31,29 @@ export default function PlanningSection() {
     <section className="bg-surface-container-low py-section-gap">
       <div className="px-margin-desktop max-w-container-max mx-auto">
         {/* Heading */}
-        <motion.div
-          className="text-center mb-16"
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={viewportOnce}
-        >
-          <motion.h2
-            className="font-headline-md text-headline-md tracking-tight mb-4"
-            variants={fadeUp}
-          >
+        <div className="text-center mb-16">
+          <h2 className="font-headline-md text-headline-md tracking-tight mb-4">
             Planeie a sua Viagem
-          </motion.h2>
-          <motion.p
-            className="font-body-md text-on-surface-variant"
-            variants={fadeUp}
-          >
+          </h2>
+          <p className="font-body-md text-on-surface-variant">
             Tudo o que precisa para entrar no coração de África com total
             segurança e conforto.
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
-        {/* Cards — stagger with spring */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-12"
-          variants={staggerSlow}
-          initial="hidden"
-          whileInView="show"
-          viewport={viewportOnce}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {PLANNING_CARDS.map((card) => (
-            <motion.div
+            <div
               key={card.title}
-              className="relative bg-surface-container-lowest p-10 border border-savanna-sand hover:border-transparent transition-colors duration-300 group cursor-pointer overflow-hidden"
-              variants={fadeUp}
-              whileHover={{ boxShadow: "0 24px 60px rgba(11,19,43,0.14)" }}
-              transition={{ duration: 0.35 }}
+              className="relative bg-surface-container-lowest p-10 border border-savanna-sand hover:border-transparent hover:shadow-[0_24px_60px_rgba(11,19,43,0.14)] transition-all duration-300 group cursor-pointer overflow-hidden"
             >
-              {/* Top accent — opens on hover */}
-              <motion.div
-                className="absolute top-0 left-0 h-[3px] bg-primary"
-                initial={{ width: "0%" }}
-                whileHover={{ width: "100%" }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
-              />
+              <div className="absolute top-0 left-0 h-[3px] w-0 bg-primary transition-[width] duration-300 group-hover:w-full" />
 
-              <motion.div
-                className="w-16 h-16 rounded-full ring-1 ring-primary-container/20 bg-primary-container/10 flex items-center justify-center mb-7 group-hover:bg-primary transition-colors duration-300"
-                whileHover={{ scale: 1.08 }}
-                transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              >
+              <div className="w-16 h-16 rounded-full ring-1 ring-primary-container/20 bg-primary-container/10 flex items-center justify-center mb-7 group-hover:bg-primary transition-colors duration-300">
                 <span className="material-symbols-outlined text-primary group-hover:text-white text-[26px] transition-colors duration-300">
                   {card.icon}
                 </span>
-              </motion.div>
+              </div>
 
               <h5 className="font-headline-sm text-[20px] font-semibold tracking-tight leading-snug mb-3">
                 {card.title}
@@ -103,9 +70,9 @@ export default function PlanningSection() {
                   arrow_forward
                 </span>
               </a>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

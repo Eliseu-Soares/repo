@@ -32,7 +32,7 @@ export default function HomePage() {
       <PatternDivider />
 
       {/* 5 — Números de Angola */}
-      <StatsSection />
+      {/*<StatsSection />*/}
 
       {/* 6 — Províncias em Destaque */}
       <ProvincesSection />
