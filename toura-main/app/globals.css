@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+/* Dark mode via class on root element */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+@theme {
+  /* Fonts (CSS vars injected by next/font) */
+  --font-display-lg: var(--font-manrope-var), "Manrope", sans-serif;
+  --font-headline-md: var(--font-manrope-var), "Manrope", sans-serif;
+  --font-headline-sm: var(--font-manrope-var), "Manrope", sans-serif;
+  --font-label-caps: var(--font-inter-var), "Inter", sans-serif;
+  --font-body-md: var(--font-inter-var), "Inter", sans-serif;
+  --font-body-lg: var(--font-inter-var), "Inter", sans-serif;
+
+  /* Colors — Surface & Background */
+  --color-background: #fcf9f8;
+  --color-surface: #fcf9f8;
+  --color-surface-bright: #fcf9f8;
+  --color-surface-dim: #dcd9d9;
+  --color-surface-variant: #e5e2e1;
+  --color-surface-container: #f0eded;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-container-high: #eae7e7;
+  --color-surface-container-highest: #e5e2e1;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-tint: #00bfa5;
+  --color-on-background: #1c1b1b;
+  --color-on-surface: #1c1b1b;
+  --color-on-surface-variant: #5a413d;
+  --color-inverse-surface: #313030;
+  --color-inverse-on-surface: #f3f0ef;
+
+  /* Colors — Primary (TEAL — changed from #840101) */
+  --color-primary: #00bfa5;
+  --color-primary-container: #007a6b;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #e0f7f4;
+  --color-primary-fixed: #b2ebe5;
+  --color-primary-fixed-dim: #80ddd6;
+  --color-on-primary-fixed: #004d45;
+  --color-on-primary-fixed-variant: #005f57;
+  --color-inverse-primary: #4db6ac;
+
+  /* Colors — Secondary (Amber/Gold — unchanged) */
+  --color-secondary: #7d5700;
+  --color-secondary-container: #ffc55f;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #755100;
+  --color-secondary-fixed: #ffdeaa;
+  --color-secondary-fixed-dim: #f5bd58;
+  --color-on-secondary-fixed: #271900;
+  --color-on-secondary-fixed-variant: #5f4100;
+
+  /* Colors — Tertiary (Dark Teal — unchanged) */
+  --color-tertiary: #1c4353;
+  --color-tertiary-container: #355b6c;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #abd1e5;
+  --color-tertiary-fixed: #c1e8fc;
+  --color-tertiary-fixed-dim: #a5cce0;
+  --color-on-tertiary-fixed: #001f2a;
+  --color-on-tertiary-fixed-variant: #254b5c;
+
+  /* Colors — Error */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  /* Colors — Outline */
+  --color-outline: #8e706c;
+  --color-outline-variant: #e2beb9;
+
+  /* Colors — Brand Neutrals */
+  --color-savanna-sand: #e8e2d9;
+  --color-clay-ivory: #fcfaf7;
+  --color-deep-ebony: #121212;
+  --color-atlantic-teal: #2d6a75;
+
+  /* Border Radius (designer values) */
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+
+  /* Spacing */
+  --spacing-section-gap: 120px;
+  --spacing-gutter: 24px;
+  --spacing-container-max: 1280px;
+  --spacing-unit: 8px;
+  --spacing-margin-desktop: 80px;
+  --spacing-margin-mobile: 20px;
+}
+
+/* ── Custom Utilities ──────────────────────────────────────── */
+@layer utilities {
+  /* Layout */
+  .max-w-container-max {
+    max-width: 1280px;
+  }
+
+  /* Typography — sizes defined here because Tailwind v4 @theme
+     --text-* doesn't compose line-height + letter-spacing + weight together */
+  .text-display-lg {
+    font-size: 64px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .text-display-lg-mobile {
+    font-size: 40px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .text-headline-md {
+    font-size: 32px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .text-headline-sm {
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .text-label-caps {
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  .text-body-md {
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .text-body-lg {
+    font-size: 18px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* Icons */
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Angolan diamond pattern (primary color updated) */
+  .pattern-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0l20 20-20 20L0 20z' fill='%2300BFA5' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+
+  /* Gradient scrim for image cards */
+  .scrim-gradient {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%);
+  }
+
+  /* Glass navbar */
+  .nav-glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Hide scrollbar (events carousel) */
+  .hide-scrollbar::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar,
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ── Accessibility ─────────────────────────────────────── */
+
+  /* Focus ring — visible keyboard navigation */
+  :focus-visible {
+    outline: 2px solid #00bfa5;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Skip-to-content link (visually hidden until focused) */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .skip-link:focus {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    padding: 12px 24px;
+    background: #00bfa5;
+    color: #ffffff;
+    z-index: 9999;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
